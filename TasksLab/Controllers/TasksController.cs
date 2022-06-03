@@ -29,15 +29,18 @@ namespace TasksLab.Controllers
 
         public async Task<JsonResult> ListAJAX([FromQuery] int page = 0, [FromQuery] int limit = 20, [FromQuery] int tab = 1)
         {
+            var tasks = _context.Tasks.Include(x => x.TaskStatusNavigation)
+                .Where(x => x.TaskStatusNavigation.StatusTab == tab)
+                .Skip(page * limit)
+                .Take(limit)
+                .ToList();
+            var statuses = _context.TaskStatus.ToList();
+            ViewBag.tabId = tab;
             return Json(new
             {
                 success = true,
                 html = await this.RenderViewAsync("TaskList", 
-                    _context.Tasks.Include(x=>x.TaskStatusNavigation)
-                        .Where(x=>x.TaskStatusNavigation.StatusTab == tab)
-                        .Skip(page * limit)
-                        .Take(limit)
-                        .ToList()
+                    new TasksWithStatuses{Tasks=tasks,Statuses=statuses}
                     ,
                     true)
             });
@@ -58,6 +61,22 @@ namespace TasksLab.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ChangeStatus([FromForm] int taskId, [FromForm] int newStatus)
+        {
+            var myTask = await _context.Tasks.FirstOrDefaultAsync(x => x.TaskId == taskId);
+            var newTaskStatus = await _context.TaskStatus.FirstOrDefaultAsync(x => x.StatusId == newStatus);
+
+            if (myTask != null && newTaskStatus != null)
+            {
+                myTask.TaskStatus = newTaskStatus.StatusId;
+                _context.Update(myTask);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, html = "" });
+
+            }
+            return Json(new { success = false, html = "" });
+        }
         [HttpPost]
         public async Task<JsonResult> AddTask([FromForm] string taskName = "", [FromForm] string description = "", [FromForm] string dueDate = "")
         {

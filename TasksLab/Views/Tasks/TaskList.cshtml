@@ -1,7 +1,16 @@
-@model List<Tasks>
+@model TasksWithStatuses
 <div class="task-list-contents">
-    @foreach (var m in Model)
+     @{ 
+         var selectString = "";
+     }
+    @foreach (var m in Model.Statuses)
     {
-        <div class="task-list-item" id="myTask_@m.TaskId">@m.TaskName (due @m.DueDate.Month/@m.DueDate.Day/@m.DueDate.Year)<span class="right-align"><button class="btn btn-primary" onclick="completeTask(@m.TaskId)">Complete</button><button class="btn btn-warning" onclick="deleteTask(@m.TaskId)">Delete</button></span></div>
+        var selected = "";
+        if (m.StatusTab == ViewBag.tabId) selected = "selected";
+        selectString += $"<option value=\"{m.StatusId}\" {selected}>{m.StatusName}</option>";
+    }
+    @foreach (var m in Model.Tasks)
+    {
+        <div class="task-list-item" id="myTask_@m.TaskId">@m.TaskName (due @m.DueDate.Month/@m.DueDate.Day/@m.DueDate.Year)<span class="right-align">@Html.Raw($"<select class=\"task-list-item__status-select\" data-task-id=\"{m.TaskId}\">{selectString}</select>")<button class="btn btn-warning" onclick="deleteTask(@m.TaskId)">Delete</button></span></div>
     }
 </div>

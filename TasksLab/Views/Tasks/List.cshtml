@@ -45,12 +45,12 @@
     var limit=20;
     var tab=1;
     $(document).ready(function () {
+        reloadTasks();
         $('.add-task-btn').on('click', function () {
             ajaxCall('/Tasks/AddTask', function (data) { 
                 $('.add-task').replaceWith(data.html)
             });
         });
-        reloadTasks();
         $(`#task-list-tab_${tab}`).addClass('active');
         $('.task-list-tab').on('click', function() {
             let $this = $(this);
@@ -60,6 +60,20 @@
             tab = tabId;
             page = 0;
             reloadTasks();
+        });
+        $('.task-list-contents').on('change', '.task-list-item__status-select', function() {
+            let $this = $(this);
+            ajaxCall(
+                '/Tasks/ChangeStatus',
+                function (data) {
+                     reloadTasks();   
+                },
+                {
+                    taskId: $this.data('task-id'),
+                    newStatus: $this.val()
+                },
+                'POST'
+            )
         });
     });
     function addTask() 
@@ -86,11 +100,29 @@
     }
     function reloadTasks()
     {
-        ajaxCall('/Tasks/ListAJAX', (data) => $('.task-list-contents').replaceWith(data.html), {page: page,  limit: limit, tab: tab});
+        let callback = function(data) {
+            $('.task-list-contents').replaceWith(data.html);
+            $('.task-list-item__status-select').on('change', function() {
+                let $this = $(this);
+                ajaxCall(
+                    '/Tasks/ChangeStatus',
+                    function (data) {
+                         reloadTasks();   
+                    },
+                    {
+                        taskId: $this.data('task-id'),
+                        newStatus: $this.val()
+                    },
+                    'POST'
+                )
+            });
+        };
+        ajaxCall('/Tasks/ListAJAX', callback, {page: page,  limit: limit, tab: tab});
+        
     }
     </script>
 }
-<button type="btn btn-primary add-task-btn">
+<button class="btn btn-primary add-task-btn">
     Add Task
 </button>
 <div class="add-task">
