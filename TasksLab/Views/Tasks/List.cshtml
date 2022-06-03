@@ -1,8 +1,25 @@
-﻿@model List<Tasks>
+﻿@model List<StatusTabs>
 @{
     ViewData["Title"] = "Home Page";
 }
 <style type="text/css">
+    .task-list {
+        margin-top: 1em;
+    }
+    .task-list-tab {
+    	border: 1px solid black;
+    	display: inline;
+    	border-radius: 0.35em;
+    	text-align: center;
+    	padding: 0.25em;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        background-color: rgba(128,128,128,0.3);
+    }
+    .task-list-tab.active {
+    	border-bottom: none;
+        background-color: rgba(128,128,128,0.0);
+    }
     .task-list-item {
         position: relative;
         border: 1px gray solid;
@@ -22,23 +39,73 @@
     	justify-self: end;
     }
 </style>
-<script type="text/javascript">
-function completeTask(taskId) {
-    let callbackFunction = (data) => location.reload();
-    ajaxCall('/Tasks/Complete', callbackFunction, {taskId: taskId}, 'POST');
- }
- function deleteTask(taskId) 
- {
-     let callbackFunction = (data) => $(`#myTask_${taskId}`).remove();
-     ajaxCall('/Tasks/Delete', callbackFunction, {taskId: taskId}, 'POST');
- }
-</script>
-<button type="btn btn-primary" onclick="location.href='/Tasks/AddTask/';">
+@section Scripts {
+    <script type="text/javascript">
+    var page=0;
+    var limit=20;
+    var tab=1;
+    $(document).ready(function () {
+        $('.add-task-btn').on('click', function () {
+            ajaxCall('/Tasks/AddTask', function (data) { 
+                $('.add-task').replaceWith(data.html)
+            });
+        });
+        reloadTasks();
+        $(`#task-list-tab_${tab}`).addClass('active');
+        $('.task-list-tab').on('click', function() {
+            let $this = $(this);
+            let tabId = $this.data('id');
+            $('.task-list-tab').removeClass('active');
+            $(`#task-list-tab_${tabId}`).addClass('active');
+            tab = tabId;
+            page = 0;
+            reloadTasks();
+        });
+    });
+    function addTask() 
+    {
+        let taskName = document.getElementById('taskName').value; 
+        let description = document.getElementById('description').value;
+        let dueDate = document.getElementById('dueDate').value;
+        let data = {taskName: taskName, description: description, dueDate: dueDate};
+        let callback = function (data) {
+            reloadTasks()
+            $('add-task').empty();
+        };
+        ajaxCall('/Tasks/AddTask', callback, data, 'POST');
+    }
+    function completeTask(taskId) 
+    {
+        let callbackFunction = (data) => reloadTasks();
+        ajaxCall('/Tasks/Complete', callbackFunction, {taskId: taskId}, 'POST');
+    }
+    function deleteTask(taskId) 
+    {
+        let callbackFunction = (data) => $(`#myTask_${taskId}`).remove();
+        ajaxCall('/Tasks/Delete', callbackFunction, {taskId: taskId}, 'POST');
+    }
+    function reloadTasks()
+    {
+        ajaxCall('/Tasks/ListAJAX', (data) => $('.task-list-contents').replaceWith(data.html), {page: page,  limit: limit, tab: tab});
+    }
+    </script>
+}
+<button type="btn btn-primary add-task-btn">
     Add Task
 </button>
+<div class="add-task">
+</div>
+
 <div class="task-list">
-@foreach (Tasks m in Model)
-{
-    <div class="task-list-item" id="myTask_@m.TaskId">@m.TaskStatus - @m.TaskName (due @m.DueDate.Month/@m.DueDate.Day/@m.DueDate.Year)<span class="right-align"><button class="btn btn-primary" onclick="completeTask(@m.TaskId)">Complete</button><button class="btn btn-warning" onclick="deleteTask(@m.TaskId)">Delete</button></span></div>
-}
+    <div class="task-list-tab-select">
+        @foreach (var m in Model)
+        {
+            <div id="task-list-tab_@m.TabId" class="task-list-tab" data-id="@m.TabId">
+                @m.TabDisplayName
+            </div>
+        }
+    </div>
+    <div class="task-list-contents">
+        
+    </div>
 </div>

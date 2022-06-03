@@ -12,9 +12,10 @@ namespace TasksLab.Models
 
         public int StatusId { get; set; }
         public string StatusName { get; set; }
-        public bool ShowTasksInList { get; set; }
         public string StatusColorHex { get; set; }
+        public int StatusTab { get; set; }
 
+        public virtual StatusTabs StatusTabNavigation { get; set; }
         public virtual ICollection<Tasks> Tasks { get; set; }
     }
 }

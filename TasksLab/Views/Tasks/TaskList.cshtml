@@ -1,0 +1,7 @@
+@model List<Tasks>
+<div class="task-list-contents">
+    @foreach (var m in Model)
+    {
+        <div class="task-list-item" id="myTask_@m.TaskId">@m.TaskName (due @m.DueDate.Month/@m.DueDate.Day/@m.DueDate.Year)<span class="right-align"><button class="btn btn-primary" onclick="completeTask(@m.TaskId)">Complete</button><button class="btn btn-warning" onclick="deleteTask(@m.TaskId)">Delete</button></span></div>
+    }
+</div>

@@ -1,0 +1,2 @@
+@model Tasks
+<div class="task-list-item" id="myTask_@Model.TaskId">@Model.TaskStatus - @Model.TaskName (due @Model.DueDate.Month/@Model.DueDate.Day/@Model.DueDate.Year)<span class="right-align"><button class="btn btn-primary" onclick="completeTask(@Model.TaskId)">Complete</button><button class="btn btn-warning" onclick="deleteTask(@Model.TaskId)">Delete</button></span></div>

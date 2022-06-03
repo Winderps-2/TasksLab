@@ -16,6 +16,7 @@ namespace TasksLab.Models
         {
         }
 
+        public virtual DbSet<StatusTabs> StatusTabs { get; set; }
         public virtual DbSet<TaskStatus> TaskStatus { get; set; }
         public virtual DbSet<Tasks> Tasks { get; set; }
 
@@ -30,10 +31,27 @@ namespace TasksLab.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<StatusTabs>(entity =>
+            {
+                entity.HasKey(e => e.TabId)
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.TabId)
+                    .HasColumnName("TabID")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.TabDisplayName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
             modelBuilder.Entity<TaskStatus>(entity =>
             {
                 entity.HasKey(e => e.StatusId)
                     .HasName("PRIMARY");
+
+                entity.HasIndex(e => e.StatusTab)
+                    .HasName("TaskStatus_FK");
 
                 entity.Property(e => e.StatusId)
                     .HasColumnName("StatusID")
@@ -48,6 +66,16 @@ namespace TasksLab.Models
                 entity.Property(e => e.StatusName)
                     .IsRequired()
                     .HasMaxLength(80);
+
+                entity.Property(e => e.StatusTab)
+                    .HasColumnType("int(10) unsigned")
+                    .HasDefaultValueSql("'1'");
+
+                entity.HasOne(d => d.StatusTabNavigation)
+                    .WithMany(p => p.TaskStatus)
+                    .HasForeignKey(d => d.StatusTab)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("TaskStatus_FK");
             });
 
             modelBuilder.Entity<Tasks>(entity =>
