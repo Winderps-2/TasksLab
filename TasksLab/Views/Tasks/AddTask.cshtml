@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Add Task";
+}
+<body>
+<script type="text/javascript">
+function addTask() {
+    let taskName = document.getElementById('taskName').value; 
+    let description = document.getElementById('description').value;
+    let dueDate = document.getElementById('dueDate').value;
+    let data = {taskName: taskName, description: description, dueDate: dueDate};
+    let callback = function (data) {location.href = '/Tasks/List';};
+    ajaxCall('/Tasks/AddTask', callback, data, 'POST');
+}
+</script>
+<form action="/Tasks/CreateTask/">
+    <input type="text" placeholder="Task Name" name="taskName" id="taskName"/>
+    <input type="text" placeholder="Description" name="description" id="description">
+    <input type="date" placeholder="Due Date" name="dueDate" id="dueDate"/>
+    <submit class="btn btn-primary" onclick="addTask()">Submit!</submit>
+</form>
+</body>

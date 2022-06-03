@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.EntityFrameworkCore">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore\3.1.5\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.Abstractions">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.abstractions\3.1.5\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.Design">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.design\3.1.5\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Design.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.Relational">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.relational\3.1.5\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.Relational.Design">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.relational.design\1.1.6\lib\netstandard1.3\Microsoft.EntityFrameworkCore.Relational.Design.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.SqlServer">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver\3.1.5\lib\netstandard2.0\Microsoft.EntityFrameworkCore.SqlServer.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.EntityFrameworkCore.SqlServer.Design">
+        <HintPath>..\..\..\.nuget\packages\microsoft.entityframeworkcore.sqlserver.design\1.1.6\lib\netstandard1.3\Microsoft.EntityFrameworkCore.SqlServer.Design.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+        <HintPath>..\..\..\.nuget\packages\microsoft.extensions.dependencyinjection.abstractions\3.1.5\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.5" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="3.1.10" />
+    </ItemGroup>
+
+</Project>

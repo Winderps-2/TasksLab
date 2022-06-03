@@ -1,0 +1,44 @@
+﻿@model List<Tasks>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<style type="text/css">
+    .task-list-item {
+        position: relative;
+        border: 1px gray solid;
+        border-radius: 0.5em;
+        width: 100%;
+        padding: 0.5em;
+        margin-bottom: 0.5em;
+        display: grid;
+        grid-template-rows: 1fr;
+        grid-template-columns: 0.7fr 0.3fr;
+        align-items: center;
+    }
+    .right-align > button {
+    	margin: 0 0.25em;
+    }
+    .right-align {
+    	justify-self: end;
+    }
+</style>
+<script type="text/javascript">
+function completeTask(taskId) {
+    let callbackFunction = (data) => location.reload();
+    ajaxCall('/Tasks/Complete', callbackFunction, {taskId: taskId}, 'POST');
+ }
+ function deleteTask(taskId) 
+ {
+     let callbackFunction = (data) => $(`#myTask_${taskId}`).remove();
+     ajaxCall('/Tasks/Delete', callbackFunction, {taskId: taskId}, 'POST');
+ }
+</script>
+<button type="btn btn-primary" onclick="location.href='/Tasks/AddTask/';">
+    Add Task
+</button>
+<div class="task-list">
+@foreach (Tasks m in Model)
+{
+    <div class="task-list-item" id="myTask_@m.TaskId">@m.TaskStatus - @m.TaskName (due @m.DueDate.Month/@m.DueDate.Day/@m.DueDate.Year)<span class="right-align"><button class="btn btn-primary" onclick="completeTask(@m.TaskId)">Complete</button><button class="btn btn-warning" onclick="deleteTask(@m.TaskId)">Delete</button></span></div>
+}
+</div>
